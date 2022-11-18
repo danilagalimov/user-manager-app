@@ -1,0 +1,59 @@
+<html>
+<head>
+    <title>User management page</title>
+</head>
+<body>
+
+<div th:if="${personEdit.id}">
+    <h1 style="text-align: center"  th:text="'Edit user ' + ${personEdit.firstName} + ' ' + ${personEdit.lastName} + ' information'">User edit page</h1>
+</div>
+<div th:unless="${personEdit.id}">
+    <h1 style="text-align: center" >Create a new user</h1>
+</div>
+
+<form method="POST" action="#" th:action="@{/edit}" th:object="${personEdit}">
+    <table>
+        <tbody>
+        <tr>
+            <td><label for="email">Please enter user email</label></td>
+            <td><input type="email" th:field="*{email}"></td>
+            <td><p style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email validation error</p></td>
+        </tr>
+        <tr>
+            <td><label for="password">Please enter user password</label></td>
+            <td><input type="password" th:field="*{password}"></td>
+            <td><p style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password validation error</p></td>
+        </tr>
+        <tr>
+            <td><label for="firstName">Please enter user first name</label></td>
+            <td><input type="text" th:field="*{firstName}"></td>
+            <td><p style="color: red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">First name validation error</p></td>
+        </tr>
+        <tr>
+            <td><label for="lastName">Please enter user last name</label></td>
+            <td><input type="text" th:field="*{lastName}"></td>
+            <td><p style="color: red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Last name validation error</p></td>
+        </tr>
+        <tr>
+            <td><label for="birthday">Please enter user last name</label></td>
+            <td><input type="date" th:field="*{birthday}"></td>
+            <td><p style="color: red" th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}">Birthday validation error</p></td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <p style="color: red" th:if="${#fields.hasGlobalErrors()}" th:text="${#fields.globalErrors()}">Global Errors</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: center">
+                <input type="submit" value="Update user information" th:if="${personEdit.id}">
+                <input type="submit" value="Create a new user" th:unless="${personEdit.id}">
+                <a href='/login'><button type="button">Cancel</button></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+</body>
+</html>

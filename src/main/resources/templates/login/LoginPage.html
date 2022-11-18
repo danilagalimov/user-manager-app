@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>User management home page</title>
+</head>
+<body>
+
+<h1 style="text-align: center">User management home page</h1>
+
+<div th:if="${personEdit.id}">
+    <table>
+        <tbody>
+            <tr><td><p
+                    th:text="'Welcome ' + ${personEdit.firstName} + ' ' + ${personEdit.lastName}">Management of user</p></td></tr>
+            <tr><td><a href="/edit"><button type="button">Edit user</button></a></td></tr>
+            <tr><td><a href="/logout"><button type="button">Logout</button></a></td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:unless="${personEdit.id}">
+    <form method="POST" action="#" th:action="@{/login}" th:object="${personLogin}">
+        <table>
+            <tbody>
+            <tr>
+                <td><label for="email">Please enter user email</label></td>
+                <td><input id="email" name="email" type="email"></td>
+                <td><p style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email validation error</p></td>
+            </tr>
+            <tr>
+                <td><label for="password">Please enter user password</label></td>
+                <td><input id="password" name="password" type="password"></td>
+                <td><p style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password validation error</p></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p style="color: red" th:if="${#fields.hasGlobalErrors()}" th:text="${#fields.globalErrors()}">Login Errors</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: center">
+                    <input type="submit" value="Login">
+                    <a href="/edit"><button type="button">Create a new user</button></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+</body>
+</html>
