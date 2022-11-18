@@ -4,6 +4,7 @@ import com.finnplay.user.manager.app.dto.PersonEditDTO;
 import com.finnplay.user.manager.app.dto.PersonLoginDTO;
 import com.finnplay.user.manager.app.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,13 +39,15 @@ public class PersonController {
 
 
     @ModelAttribute(PersonLoginDTO.PERSON_LOGIN_BEAN_NAME)
+    @Lookup
     public PersonLoginDTO personLogin() {
-        return new PersonLoginDTO();
+        return null;
     }
 
     @ModelAttribute(PersonEditDTO.PERSON_EDIT_BEAN_NAME)
+    @Lookup
     public PersonEditDTO personEdit() {
-        return new PersonEditDTO();
+        return null;
     }
 
     @GetMapping(LOGIN_PAGE_URL)
