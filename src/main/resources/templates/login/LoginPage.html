@@ -32,8 +32,8 @@
                 <td><p style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password validation error</p></td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <p style="color: red" th:if="${#fields.hasGlobalErrors()}" th:text="${#fields.globalErrors()}">Login Errors</p>
+                <td colspan="3">
+                    <p style="color: red; text-align: center" th:if="${#fields.hasGlobalErrors()}" th:text="${#fields.globalErrors()}">Login Errors</p>
                 </td>
             </tr>
             <tr>
