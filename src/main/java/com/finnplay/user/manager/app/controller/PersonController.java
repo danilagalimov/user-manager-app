@@ -3,6 +3,7 @@ package com.finnplay.user.manager.app.controller;
 import com.finnplay.user.manager.app.dto.PersonEditDTO;
 import com.finnplay.user.manager.app.dto.PersonLoginDTO;
 import com.finnplay.user.manager.app.service.PersonService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 
 @Controller
 @SessionAttributes({PersonEditDTO.PERSON_EDIT_BEAN_NAME, PersonLoginDTO.PERSON_LOGIN_BEAN_NAME})
+@Slf4j
 public class PersonController {
     private static final String LOGIN_PAGE_TEMPLATE = "login/LoginPage";
     private static final String EDIT_PAGE_TEMPLATE = "login/EditPersonPage";
@@ -74,7 +76,9 @@ public class PersonController {
                 return LOGIN_PAGE_TEMPLATE;
             }
         } catch (Exception e) {
+            log.error("Failed to log in", e);
             addError(result, e.getMessage());
+
             return LOGIN_PAGE_TEMPLATE;
         }
     }
@@ -93,6 +97,7 @@ public class PersonController {
         try {
             updatePersonBean(model, personService.update(personDTO));
         } catch (Exception e) {
+            log.error("Failed to edit user", e);
             addError(result, e.getMessage());
             return EDIT_PAGE_TEMPLATE;
         }
