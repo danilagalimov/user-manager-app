@@ -3,7 +3,6 @@ package com.finnplay.user.manager.app.service;
 import com.finnplay.user.manager.app.data.Person;
 import com.finnplay.user.manager.app.dto.PersonEditDTO;
 import com.finnplay.user.manager.app.repository.PersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ public class PersonService {
 
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public PersonService(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.passwordEncoder = passwordEncoder;

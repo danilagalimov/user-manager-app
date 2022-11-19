@@ -4,7 +4,6 @@ import com.finnplay.user.manager.app.dto.PersonEditDTO;
 import com.finnplay.user.manager.app.dto.PersonLoginDTO;
 import com.finnplay.user.manager.app.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -20,7 +19,7 @@ import javax.validation.Valid;
 @Controller
 @SessionAttributes({PersonEditDTO.PERSON_EDIT_BEAN_NAME, PersonLoginDTO.PERSON_LOGIN_BEAN_NAME})
 @Slf4j
-public class PersonController {
+public abstract class PersonController {
     private static final String LOGIN_PAGE_TEMPLATE = "login/LoginPage";
     private static final String EDIT_PAGE_TEMPLATE = "login/EditPersonPage";
     private static final String LOGIN_PAGE_URL = "/login";
@@ -30,8 +29,7 @@ public class PersonController {
 
     private final PersonService personService;
 
-    @Autowired
-    public PersonController(PersonService personService) {
+    protected PersonController(PersonService personService) {
         this.personService = personService;
     }
 
@@ -44,15 +42,11 @@ public class PersonController {
 
     @ModelAttribute(PersonLoginDTO.PERSON_LOGIN_BEAN_NAME)
     @Lookup
-    public PersonLoginDTO personLogin() {
-        return null;
-    }
+    public abstract PersonLoginDTO personLogin();
 
     @ModelAttribute(PersonEditDTO.PERSON_EDIT_BEAN_NAME)
     @Lookup
-    public PersonEditDTO personEdit() {
-        return null;
-    }
+    public abstract PersonEditDTO personEdit();
 
     @GetMapping(LOGIN_PAGE_URL)
     public String doLogin() {
