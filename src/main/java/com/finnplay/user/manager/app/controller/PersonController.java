@@ -69,7 +69,7 @@ public class PersonController {
                 addError(result, "Invalid username or password");
                 return LOGIN_PAGE_TEMPLATE;
             }
-        } catch (ReflectiveOperationException e) {
+        } catch (Exception e) {
             addError(result, e.getMessage());
             return LOGIN_PAGE_TEMPLATE;
         }
