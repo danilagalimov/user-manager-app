@@ -58,7 +58,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void testLoginInvaliData() throws ReflectiveOperationException {
+    void testLoginInvaliData() {
         PersonEditDTO loggedPerson = testedInstance.login("invalid email", "invalid password");
         assertThat(loggedPerson, is(nullValue()));
 
@@ -68,7 +68,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void test_login_valid_data() throws ReflectiveOperationException {
+    void test_login_valid_data() {
         when(personRepository.findByEmail(PERSON_EMAIL)).thenReturn(person);
         when(passwordEncoder.matches(PERSON_PASSWORD, PASSWORD_HASH)).thenReturn(true);
 
@@ -86,7 +86,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void test_update() throws ReflectiveOperationException {
+    void test_update() {
         when(personRepository.save(any())).then((Answer<Person>) invocation -> {
             Person original = invocation.getArgument(0);
 

@@ -3,7 +3,6 @@ package com.finnplay.user.manager.app.service;
 import com.finnplay.user.manager.app.data.Person;
 import com.finnplay.user.manager.app.dto.PersonEditDTO;
 import com.finnplay.user.manager.app.repository.PersonRepository;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ public class PersonService {
     }
 
     @Transactional(Transactional.TxType.SUPPORTS)
-    public PersonEditDTO login(String email, String password) throws ReflectiveOperationException {
+    public PersonEditDTO login(String email, String password) {
         Person person = personRepository.findByEmail(email);
 
         if (null != person && passwordEncoder.matches(password, person.getPasswordHash())) {
@@ -34,7 +33,7 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonEditDTO update(PersonEditDTO personDTO) throws ReflectiveOperationException {
+    public PersonEditDTO update(PersonEditDTO personDTO) {
         Person person = assemblePersonFromDTO(personDTO);
 
         person = personRepository.save(person);
@@ -42,16 +41,27 @@ public class PersonService {
         return updatePersonDTOFromPerson(personDTO, person);
     }
 
-    private static PersonEditDTO updatePersonDTOFromPerson(PersonEditDTO personDTO, Person person) throws ReflectiveOperationException {
-        PropertyUtils.copyProperties(personDTO, person);
+    private static PersonEditDTO updatePersonDTOFromPerson(PersonEditDTO personDTO, Person person) {
+        personDTO.setId(person.getId());
+        personDTO.setBirthday(person.getBirthday());
+        personDTO.setEmail(person.getEmail());
+        personDTO.setVersion(person.getVersion());
+        personDTO.setFirstName(person.getFirstName());
+        personDTO.setLastName(person.getLastName());
 
         return personDTO;
     }
 
-    private Person assemblePersonFromDTO(PersonEditDTO personDTO) throws ReflectiveOperationException {
+    private Person assemblePersonFromDTO(PersonEditDTO personDTO)  {
         Person person = new Person();
 
-        PropertyUtils.copyProperties(person, personDTO);
+        person.setId(personDTO.getId());
+        person.setEmail(personDTO.getEmail());
+        person.setBirthday(personDTO.getBirthday());
+        person.setFirstName(personDTO.getFirstName());
+        person.setLastName(personDTO.getLastName());
+        person.setVersion(personDTO.getVersion());
+
         person.setPasswordHash(passwordEncoder.encode(personDTO.getPassword()));
 
         return person;
