@@ -26,8 +26,12 @@ public class PersonController {
     private static final String LOGOUT_URL = "/logout";
     private static final String REDIRECT_PREFIX = "redirect:";
 
+    private final PersonService personService;
+
     @Autowired
-    private PersonService personService;
+    public PersonController(PersonService personService) {
+        this.personService = personService;
+    }
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)

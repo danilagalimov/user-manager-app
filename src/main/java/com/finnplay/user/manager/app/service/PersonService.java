@@ -12,11 +12,15 @@ import javax.transaction.Transactional;
 
 @Service
 public class PersonService {
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public PersonService(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
+        this.personRepository = personRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Transactional(Transactional.TxType.SUPPORTS)
     public PersonEditDTO login(String email, String password) throws ReflectiveOperationException {
