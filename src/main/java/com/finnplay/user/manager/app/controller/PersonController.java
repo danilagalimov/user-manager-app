@@ -10,10 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.validation.Valid;
 
 @Controller
 @SessionAttributes({PersonEditDTO.PERSON_EDIT_BEAN_NAME, PersonLoginDTO.PERSON_LOGIN_BEAN_NAME})
@@ -27,9 +28,6 @@ public class PersonController {
 
     @Autowired
     private PersonService personService;
-
-    @Autowired
-    private SmartValidator validator;
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
@@ -56,8 +54,7 @@ public class PersonController {
     }
 
     @PostMapping(LOGIN_PAGE_URL)
-    public String doLogin(@ModelAttribute(PersonLoginDTO.PERSON_LOGIN_BEAN_NAME) PersonLoginDTO personLoginDTO, Model model, BindingResult result) {
-        validator.validate(personLoginDTO, result);
+    public String doLogin(@ModelAttribute(PersonLoginDTO.PERSON_LOGIN_BEAN_NAME) @Valid PersonLoginDTO personLoginDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return LOGIN_PAGE_TEMPLATE;
         }
@@ -84,8 +81,7 @@ public class PersonController {
     }
 
     @PostMapping(EDIT_PAGE_URL)
-    public String doEdit(@ModelAttribute(PersonEditDTO.PERSON_EDIT_BEAN_NAME) PersonEditDTO personDTO, Model model, BindingResult result) {
-        validator.validate(personDTO, result);
+    public String doEdit(@ModelAttribute(PersonEditDTO.PERSON_EDIT_BEAN_NAME) @Valid PersonEditDTO personDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return EDIT_PAGE_TEMPLATE;
         }
