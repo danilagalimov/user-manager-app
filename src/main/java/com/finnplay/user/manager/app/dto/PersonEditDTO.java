@@ -6,10 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @Data
@@ -25,9 +22,11 @@ public class PersonEditDTO {
     String email;
 
     @NotEmpty
+    @Size(min = 2, max=35)
     String firstName;
 
     @NotEmpty
+    @Size(min = 2, max=35)
     String lastName;
 
     @NotNull
@@ -36,6 +35,7 @@ public class PersonEditDTO {
     Date birthday;
 
     @NotEmpty
+    @Size(min = 3, max=72)
     String password;
 
     Integer version;
