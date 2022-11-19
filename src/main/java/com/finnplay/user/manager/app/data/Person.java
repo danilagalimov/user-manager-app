@@ -15,19 +15,19 @@ public class Person {
     @Column
     private Integer id;
 
-    @Column
+    @Column(length = 254)
     private String email;
 
-    @Column
+    @Column(length = 35)
     private String firstName;
 
-    @Column
+    @Column(length = 35)
     private String lastName;
 
     @Column
     private Date birthday;
 
-    @Column
+    @Column(length = 60)
     private String passwordHash;
 
     @Version
