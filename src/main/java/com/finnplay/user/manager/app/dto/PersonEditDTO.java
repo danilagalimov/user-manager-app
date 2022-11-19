@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Component
@@ -22,20 +22,20 @@ public class PersonEditDTO {
     String email;
 
     @NotEmpty
-    @Size(min = 2, max=35)
+    @Size(min = 2, max = 35)
     String firstName;
 
     @NotEmpty
-    @Size(min = 2, max=35)
+    @Size(min = 2, max = 35)
     String lastName;
 
     @NotNull
     @Past
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date birthday;
+    LocalDate birthday;
 
     @NotEmpty
-    @Size(min = 3, max=72)
+    @Size(min = 3, max = 72)
     String password;
 
     Integer version;

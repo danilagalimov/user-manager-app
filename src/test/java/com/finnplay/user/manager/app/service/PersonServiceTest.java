@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -28,7 +28,7 @@ class PersonServiceTest {
     private static final String PASSWORD_HASH = "password hash";
     private static final String PERSON_PASSWORD = "person password";
     private static final int PERSON_ID = 5675;
-    private static final Date PERSON_BIRTHDAY = new Date(23423434);
+    private static final LocalDate PERSON_BIRTHDAY = LocalDate.ofEpochDay(23423434);
     private static final int PERSON_VERSION = 6756;
     private static final String PERSON_FIRST_NAME = "first name";
     private static final String PERSON_LAST_NAME = "last name";
@@ -94,7 +94,7 @@ class PersonServiceTest {
 
             saved.setEmail(UPDATED + original.getEmail());
             saved.setId(UPDATED_NUMBER + original.getId());
-            saved.setBirthday(new Date(original.getBirthday().getTime() + UPDATED_NUMBER));
+            saved.setBirthday(LocalDate.ofEpochDay(original.getBirthday().toEpochDay() + UPDATED_NUMBER));
             saved.setFirstName(UPDATED + original.getFirstName());
             saved.setLastName(UPDATED + original.getLastName());
             saved.setVersion(UPDATED_NUMBER + original.getVersion());
@@ -121,7 +121,7 @@ class PersonServiceTest {
         assertThat(updatedPerson.getId(), is(UPDATED_NUMBER + PERSON_ID));
         assertThat(updatedPerson.getFirstName(), is(UPDATED + PERSON_FIRST_NAME));
         assertThat(updatedPerson.getLastName(), is(UPDATED + PERSON_LAST_NAME));
-        assertThat(updatedPerson.getBirthday(), is(new Date(UPDATED_NUMBER + PERSON_BIRTHDAY.getTime())));
+        assertThat(updatedPerson.getBirthday(), is(LocalDate.ofEpochDay(UPDATED_NUMBER + PERSON_BIRTHDAY.toEpochDay())));
         assertThat(updatedPerson.getVersion(), is(UPDATED_NUMBER + PERSON_VERSION));
     }
 }

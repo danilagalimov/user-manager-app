@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -12,7 +12,6 @@ import java.util.Date;
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Integer id;
 
     @Column(length = 254)
@@ -24,13 +23,11 @@ public class Person {
     @Column(length = 35)
     private String lastName;
 
-    @Column
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(length = 60)
     private String passwordHash;
 
     @Version
-    @Column
     private Integer version;
 }
