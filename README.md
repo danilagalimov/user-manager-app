@@ -20,3 +20,5 @@ docker image build -t user-manager-app-db mysql
 
 docker-compose -p user-manager-suite up
 ```
+
+If you want to run the container without docker-compose, execute ([run-docker-images.cmd](https://github.com/danilagalimov/user-manager-app/blob/master/run-docker-images.cmd)). It stops all the containers then starts them again.
