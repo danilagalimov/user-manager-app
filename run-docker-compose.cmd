@@ -1,0 +1,1 @@
+docker-compose -p user-manager-suite up

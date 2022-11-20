@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  user-manager-app-container:
+    image: user-manager-app
+    ports:
+      - "80:8080"
+    networks:
+      - user-manager-app-network
+    depends_on:
+      - user-manager-app-db-container
+    environment:
+      - DB_HOST_NAME=user-manager-app-db-container
+ 
+  user-manager-app-db-container:
+    image: user-manager-app-db
+    ports:
+      - "53306:3306"
+    networks:
+      - user-manager-app-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+
+networks:
+  user-manager-app-network: 
