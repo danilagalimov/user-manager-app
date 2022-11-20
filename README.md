@@ -3,14 +3,14 @@ Simple application to maintain a user list
 
 Tecnhologies used:
 
-#### Spring boot
-#### Spring MVC
-#### thymeleaf
-#### Hibernate
-#### MySQL
-#### Docker
+- Spring boot
+- Spring MVC
+- Thymeleaf
+- Hibernate
+- MySQL
+- Docker
 
-To build it, execute `build-docker-images.cmd` then `run-docker-compose.cmd` (on Windows).
+To build it, checkout the project then execute `build-docker-images.cmd` then `run-docker-compose.cmd` (on Windows).
 On Linux, execute these commands instead (in the root project directory):
 ```
 mvn clean install
