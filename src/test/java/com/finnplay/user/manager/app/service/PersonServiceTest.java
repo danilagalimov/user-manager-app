@@ -1,6 +1,7 @@
 package com.finnplay.user.manager.app.service;
 
 import com.finnplay.user.manager.app.data.Person;
+import com.finnplay.user.manager.app.data.PersonIdOnly;
 import com.finnplay.user.manager.app.dto.PersonEditRequest;
 import com.finnplay.user.manager.app.exception.DuplicatePersonException;
 import com.finnplay.user.manager.app.repository.PersonRepository;
@@ -64,14 +65,14 @@ class PersonServiceTest {
         PersonEditRequest loggedPerson = testedInstance.login("invalid email", "invalid password");
         assertThat(loggedPerson, is(nullValue()));
 
-        when(personRepository.findByEmail(PERSON_EMAIL)).thenReturn(person);
+        when(personRepository.findByEmail(PERSON_EMAIL, Person.class)).thenReturn(person);
         loggedPerson = testedInstance.login(PERSON_EMAIL, "invalid password");
         assertThat(loggedPerson, is(nullValue()));
     }
 
     @Test
     void testLoginValidData() {
-        when(personRepository.findByEmail(PERSON_EMAIL)).thenReturn(person);
+        when(personRepository.findByEmail(PERSON_EMAIL, Person.class)).thenReturn(person);
         when(passwordEncoder.matches(PERSON_PASSWORD, PASSWORD_HASH)).thenReturn(true);
 
         PersonEditRequest loggedPerson = testedInstance.login(PERSON_EMAIL, PERSON_PASSWORD);
@@ -88,20 +89,20 @@ class PersonServiceTest {
     }
 
     @Test
-    void testUpdateValidNoExistingEmail() {
-        when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(null);
+    void testUpdateValidNoExistingEmail() throws DuplicatePersonException {
+        when(personRepository.findByEmail(PERSON_EMAIL, PersonIdOnly.class)).thenReturn(null);
         checkCorrectUserUpdate();
     }
 
     @Test
-    void testUpdateValidSameExistingEmail() {
-        when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(PERSON_ID);
+    void testUpdateValidSameExistingEmail() throws DuplicatePersonException {
+        when(personRepository.findByEmail(PERSON_EMAIL, PersonIdOnly.class)).thenReturn(() ->PERSON_ID);
         checkCorrectUserUpdate();
     }
 
     @Test()
     void testUpdateExistingDuplicateEmail() {
-        when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(234);
+        when(personRepository.findByEmail(PERSON_EMAIL, PersonIdOnly.class)).thenReturn(() -> 234);
 
         PersonEditRequest sourcePerson = new PersonEditRequest();
 
@@ -118,7 +119,7 @@ class PersonServiceTest {
 
     @Test()
     void testUpdateNewDuplicateEmail() {
-        when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(234);
+        when(personRepository.findByEmail(PERSON_EMAIL, PersonIdOnly.class)).thenReturn(() -> 234);
 
         PersonEditRequest sourcePerson = new PersonEditRequest();
 
@@ -132,7 +133,7 @@ class PersonServiceTest {
         assertThrows(DuplicatePersonException.class, () -> testedInstance.update(sourcePerson));
     }
 
-    private void checkCorrectUserUpdate() {
+    private void checkCorrectUserUpdate() throws DuplicatePersonException {
         when(personRepository.save(any())).then((Answer<Person>) invocation -> {
             Person original = invocation.getArgument(0);
 

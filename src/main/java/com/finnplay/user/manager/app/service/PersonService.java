@@ -1,13 +1,13 @@
 package com.finnplay.user.manager.app.service;
 
 import com.finnplay.user.manager.app.data.Person;
+import com.finnplay.user.manager.app.data.PersonIdOnly;
 import com.finnplay.user.manager.app.dto.PersonEditRequest;
 import com.finnplay.user.manager.app.exception.DuplicatePersonException;
 import com.finnplay.user.manager.app.repository.PersonRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonService {
@@ -20,9 +20,9 @@ public class PersonService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional(Transactional.TxType.SUPPORTS)
+    @Transactional(readOnly = true)
     public PersonEditRequest login(String email, String password) {
-        Person person = personRepository.findByEmail(email);
+        Person person = personRepository.findByEmail(email, Person.class);
 
         if (null != person && passwordEncoder.matches(password, person.getPasswordHash())) {
             return updatePersonDTOFromPerson(new PersonEditRequest(), person);
@@ -32,15 +32,14 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonEditRequest update(PersonEditRequest personDTO) {
+    public PersonEditRequest update(PersonEditRequest personDTO) throws DuplicatePersonException {
         Person person = assemblePersonFromDTO(personDTO);
 
-        String email = person.getEmail();
-        Integer existingPersonId = personRepository.getExistingUserId(email);
+        PersonIdOnly existingPersonId = personRepository.findByEmail(person.getEmail(), PersonIdOnly.class);
 
         if (null != existingPersonId &&
-                (null == person.getId() || !existingPersonId.equals(person.getId()))) {
-            throw new DuplicatePersonException("Person with email " + email  + " already exists");
+                (null == person.getId() || !existingPersonId.getId().equals(person.getId()))) {
+            throw new DuplicatePersonException("Person with this email already exists");
         }
 
         person = personRepository.save(person);
