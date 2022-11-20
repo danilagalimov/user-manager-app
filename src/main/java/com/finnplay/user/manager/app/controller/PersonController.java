@@ -39,7 +39,6 @@ public abstract class PersonController {
         return new RedirectView(LOGIN_PAGE_URL);
     }
 
-
     @ModelAttribute(PersonLoginDTO.PERSON_LOGIN_BEAN_NAME)
     @Lookup
     public abstract PersonLoginDTO personLogin();
@@ -64,9 +63,10 @@ public abstract class PersonController {
             if (null != loggedPerson) {
                 updatePersonBean(model, loggedPerson);
 
-                return REDIRECT_PREFIX + LOGIN_PAGE_URL;
+                return redirectTo(LOGIN_PAGE_URL);
             } else {
                 addError(result, "Invalid username or password");
+
                 return LOGIN_PAGE_TEMPLATE;
             }
         } catch (Exception e) {
@@ -93,6 +93,7 @@ public abstract class PersonController {
         } catch (Exception e) {
             log.error("Failed to edit user", e);
             addError(result, e.getMessage());
+
             return EDIT_PAGE_TEMPLATE;
         }
 
@@ -103,7 +104,11 @@ public abstract class PersonController {
     public String doLogout(SessionStatus sessionStatus) {
         sessionStatus.setComplete();
 
-        return REDIRECT_PREFIX + LOGIN_PAGE_URL;
+        return redirectTo(LOGIN_PAGE_URL);
+    }
+
+    private static String redirectTo(String url) {
+        return REDIRECT_PREFIX + url;
     }
 
     private static void addError(BindingResult result, String errorMessage) {
