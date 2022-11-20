@@ -2,6 +2,7 @@ package com.finnplay.user.manager.app.service;
 
 import com.finnplay.user.manager.app.data.Person;
 import com.finnplay.user.manager.app.dto.PersonEditDTO;
+import com.finnplay.user.manager.app.exception.DuplicatePersonException;
 import com.finnplay.user.manager.app.repository.PersonRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,14 @@ public class PersonService {
     @Transactional
     public PersonEditDTO update(PersonEditDTO personDTO) {
         Person person = assemblePersonFromDTO(personDTO);
+
+        String email = person.getEmail();
+        Integer existingPersonId = personRepository.getExistingUserId(email);
+
+        if (null != existingPersonId &&
+                (null == person.getId() || !existingPersonId.equals(person.getId()))) {
+            throw new DuplicatePersonException("Person with email " + email  + " already exists");
+        }
 
         person = personRepository.save(person);
 

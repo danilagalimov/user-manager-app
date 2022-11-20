@@ -2,6 +2,7 @@ package com.finnplay.user.manager.app.service;
 
 import com.finnplay.user.manager.app.data.Person;
 import com.finnplay.user.manager.app.dto.PersonEditDTO;
+import com.finnplay.user.manager.app.exception.DuplicatePersonException;
 import com.finnplay.user.manager.app.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -86,7 +88,51 @@ class PersonServiceTest {
     }
 
     @Test
-    void testUpdateValid() {
+    void testUpdateValidNoExistingEmail() {
+        when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(null);
+        checkCorrectUserUpdate();
+    }
+
+    @Test
+    void testUpdateValidSameExistingEmail() {
+        when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(PERSON_ID);
+        checkCorrectUserUpdate();
+    }
+
+    @Test()
+    void testUpdateExistingDuplicateEmail() {
+        when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(234);
+
+        PersonEditDTO sourcePerson = new PersonEditDTO();
+
+        sourcePerson.setId(PERSON_ID);
+        sourcePerson.setBirthday(PERSON_BIRTHDAY);
+        sourcePerson.setVersion(PERSON_VERSION);
+        sourcePerson.setFirstName(PERSON_FIRST_NAME);
+        sourcePerson.setLastName(PERSON_LAST_NAME);
+        sourcePerson.setPassword(PERSON_PLAIN_TEXT_PASSWORD);
+        sourcePerson.setEmail(PERSON_EMAIL);
+
+        assertThrows(DuplicatePersonException.class, () -> testedInstance.update(sourcePerson));
+    }
+
+    @Test()
+    void testUpdateNewDuplicateEmail() {
+        when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(234);
+
+        PersonEditDTO sourcePerson = new PersonEditDTO();
+
+        sourcePerson.setBirthday(PERSON_BIRTHDAY);
+        sourcePerson.setVersion(PERSON_VERSION);
+        sourcePerson.setFirstName(PERSON_FIRST_NAME);
+        sourcePerson.setLastName(PERSON_LAST_NAME);
+        sourcePerson.setPassword(PERSON_PLAIN_TEXT_PASSWORD);
+        sourcePerson.setEmail(PERSON_EMAIL);
+
+        assertThrows(DuplicatePersonException.class, () -> testedInstance.update(sourcePerson));
+    }
+
+    private void checkCorrectUserUpdate() {
         when(personRepository.save(any())).then((Answer<Person>) invocation -> {
             Person original = invocation.getArgument(0);
 
