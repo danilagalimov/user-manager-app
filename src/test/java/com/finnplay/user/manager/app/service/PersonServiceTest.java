@@ -1,7 +1,7 @@
 package com.finnplay.user.manager.app.service;
 
 import com.finnplay.user.manager.app.data.Person;
-import com.finnplay.user.manager.app.dto.PersonEditDTO;
+import com.finnplay.user.manager.app.dto.PersonEditRequest;
 import com.finnplay.user.manager.app.exception.DuplicatePersonException;
 import com.finnplay.user.manager.app.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +61,7 @@ class PersonServiceTest {
 
     @Test
     void testLoginInvalidData() {
-        PersonEditDTO loggedPerson = testedInstance.login("invalid email", "invalid password");
+        PersonEditRequest loggedPerson = testedInstance.login("invalid email", "invalid password");
         assertThat(loggedPerson, is(nullValue()));
 
         when(personRepository.findByEmail(PERSON_EMAIL)).thenReturn(person);
@@ -74,7 +74,7 @@ class PersonServiceTest {
         when(personRepository.findByEmail(PERSON_EMAIL)).thenReturn(person);
         when(passwordEncoder.matches(PERSON_PASSWORD, PASSWORD_HASH)).thenReturn(true);
 
-        PersonEditDTO loggedPerson = testedInstance.login(PERSON_EMAIL, PERSON_PASSWORD);
+        PersonEditRequest loggedPerson = testedInstance.login(PERSON_EMAIL, PERSON_PASSWORD);
 
         assertThat(loggedPerson, is(notNullValue()));
 
@@ -103,7 +103,7 @@ class PersonServiceTest {
     void testUpdateExistingDuplicateEmail() {
         when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(234);
 
-        PersonEditDTO sourcePerson = new PersonEditDTO();
+        PersonEditRequest sourcePerson = new PersonEditRequest();
 
         sourcePerson.setId(PERSON_ID);
         sourcePerson.setBirthday(PERSON_BIRTHDAY);
@@ -120,7 +120,7 @@ class PersonServiceTest {
     void testUpdateNewDuplicateEmail() {
         when(personRepository.getExistingUserId(PERSON_EMAIL)).thenReturn(234);
 
-        PersonEditDTO sourcePerson = new PersonEditDTO();
+        PersonEditRequest sourcePerson = new PersonEditRequest();
 
         sourcePerson.setBirthday(PERSON_BIRTHDAY);
         sourcePerson.setVersion(PERSON_VERSION);
@@ -149,7 +149,7 @@ class PersonServiceTest {
             return saved;
         });
 
-        PersonEditDTO sourcePerson = new PersonEditDTO();
+        PersonEditRequest sourcePerson = new PersonEditRequest();
 
         sourcePerson.setId(PERSON_ID);
         sourcePerson.setBirthday(PERSON_BIRTHDAY);
@@ -159,7 +159,7 @@ class PersonServiceTest {
         sourcePerson.setPassword(PERSON_PLAIN_TEXT_PASSWORD);
         sourcePerson.setEmail(PERSON_EMAIL);
 
-        PersonEditDTO updatedPerson = testedInstance.update(sourcePerson);
+        PersonEditRequest updatedPerson = testedInstance.update(sourcePerson);
         assertThat(updatedPerson, is(notNullValue()));
 
         assertThat(updatedPerson.getPassword(), is(PERSON_PLAIN_TEXT_PASSWORD));

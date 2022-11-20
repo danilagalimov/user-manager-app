@@ -1,7 +1,7 @@
 package com.finnplay.user.manager.app.controller;
 
-import com.finnplay.user.manager.app.dto.PersonEditDTO;
-import com.finnplay.user.manager.app.dto.PersonLoginDTO;
+import com.finnplay.user.manager.app.dto.PersonEditRequest;
+import com.finnplay.user.manager.app.dto.PersonLoginRequest;
 import com.finnplay.user.manager.app.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Lookup;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.validation.Valid;
 
 @Controller
-@SessionAttributes({PersonEditDTO.PERSON_EDIT_BEAN_NAME, PersonLoginDTO.PERSON_LOGIN_BEAN_NAME})
+@SessionAttributes({PersonEditRequest.PERSON_EDIT_BEAN_NAME, PersonLoginRequest.PERSON_LOGIN_BEAN_NAME})
 @Slf4j
 public abstract class PersonController {
     private static final String LOGIN_PAGE_TEMPLATE = "login/LoginPage";
@@ -39,13 +39,13 @@ public abstract class PersonController {
         return new RedirectView(LOGIN_PAGE_URL);
     }
 
-    @ModelAttribute(PersonLoginDTO.PERSON_LOGIN_BEAN_NAME)
+    @ModelAttribute(PersonLoginRequest.PERSON_LOGIN_BEAN_NAME)
     @Lookup
-    public abstract PersonLoginDTO personLogin();
+    public abstract PersonLoginRequest personLogin();
 
-    @ModelAttribute(PersonEditDTO.PERSON_EDIT_BEAN_NAME)
+    @ModelAttribute(PersonEditRequest.PERSON_EDIT_BEAN_NAME)
     @Lookup
-    public abstract PersonEditDTO personEdit();
+    public abstract PersonEditRequest personEdit();
 
     @GetMapping(LOGIN_PAGE_URL)
     public String doLogin() {
@@ -53,13 +53,13 @@ public abstract class PersonController {
     }
 
     @PostMapping(LOGIN_PAGE_URL)
-    public String doLogin(@ModelAttribute(PersonLoginDTO.PERSON_LOGIN_BEAN_NAME) @Valid PersonLoginDTO personLoginDTO, BindingResult result, Model model) {
+    public String doLogin(@ModelAttribute(PersonLoginRequest.PERSON_LOGIN_BEAN_NAME) @Valid PersonLoginRequest personLoginRequest, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return LOGIN_PAGE_TEMPLATE;
         }
 
         try {
-            PersonEditDTO loggedPerson = personService.login(personLoginDTO.getEmail(), personLoginDTO.getPassword());
+            PersonEditRequest loggedPerson = personService.login(personLoginRequest.getEmail(), personLoginRequest.getPassword());
             if (null != loggedPerson) {
                 updatePersonBean(model, loggedPerson);
 
@@ -83,7 +83,7 @@ public abstract class PersonController {
     }
 
     @PostMapping(EDIT_PAGE_URL)
-    public String doEdit(@ModelAttribute(PersonEditDTO.PERSON_EDIT_BEAN_NAME) @Valid PersonEditDTO personDTO, BindingResult result, Model model) {
+    public String doEdit(@ModelAttribute(PersonEditRequest.PERSON_EDIT_BEAN_NAME) @Valid PersonEditRequest personDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return EDIT_PAGE_TEMPLATE;
         }
@@ -115,8 +115,8 @@ public abstract class PersonController {
         result.addError(new ObjectError("globalError", errorMessage));
     }
 
-    private static void updatePersonBean(Model model, PersonEditDTO loggedPerson) {
-        model.addAttribute(PersonEditDTO.PERSON_EDIT_BEAN_NAME, loggedPerson);
+    private static void updatePersonBean(Model model, PersonEditRequest loggedPerson) {
+        model.addAttribute(PersonEditRequest.PERSON_EDIT_BEAN_NAME, loggedPerson);
     }
 
 }
