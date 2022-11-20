@@ -5,11 +5,13 @@ import com.finnplay.user.manager.app.data.PersonIdOnly;
 import com.finnplay.user.manager.app.dto.PersonEditDTO;
 import com.finnplay.user.manager.app.exception.DuplicatePersonException;
 import com.finnplay.user.manager.app.repository.PersonRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 public class PersonService {
     private final PersonRepository personRepository;
 
@@ -22,10 +24,17 @@ public class PersonService {
 
     @Transactional(readOnly = true)
     public PersonEditDTO login(String email, String password) {
+        log.debug("Trying to find the user by email {}", email);
         Person person = personRepository.findByEmail(email, Person.class);
 
-        if (null != person && passwordEncoder.matches(password, person.getPasswordHash())) {
-            return updatePersonDTOFromPerson(new PersonEditDTO(), person);
+        if (null != person) {
+            if (passwordEncoder.matches(password, person.getPasswordHash())) {
+                log.debug("Successfully logged in");
+
+                return updatePersonDTOFromPerson(new PersonEditDTO(), person);
+            } else {
+                log.debug("Entered password do not match");
+            }
         }
 
         return null;
@@ -39,6 +48,8 @@ public class PersonService {
 
         if (null != existingPersonId &&
                 (null == person.getId() || !existingPersonId.getId().equals(person.getId()))) {
+            log.debug("User {} tried to set email to existing (user with id {})", person.getId(), existingPersonId.getId());
+
             throw new DuplicatePersonException("Person with this email already exists");
         }
 
