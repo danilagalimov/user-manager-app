@@ -3,7 +3,7 @@ Simple application to maintain a user list
 
 Tecnhologies used:
 
-- Spring boot
+- Spring Boot
 - Spring MVC
 - Thymeleaf
 - Hibernate
