@@ -11,8 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PersonLoginRequest {
-    public static final String PERSON_LOGIN_BEAN_NAME = "personLogin";
+public class PersonLoginDTO {
     @NotEmpty
     @Email
     private String email;

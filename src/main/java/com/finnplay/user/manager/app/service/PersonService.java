@@ -2,7 +2,7 @@ package com.finnplay.user.manager.app.service;
 
 import com.finnplay.user.manager.app.data.Person;
 import com.finnplay.user.manager.app.data.PersonIdOnly;
-import com.finnplay.user.manager.app.dto.PersonEditRequest;
+import com.finnplay.user.manager.app.dto.PersonEditDTO;
 import com.finnplay.user.manager.app.exception.DuplicatePersonException;
 import com.finnplay.user.manager.app.repository.PersonRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,18 +21,18 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public PersonEditRequest login(String email, String password) {
+    public PersonEditDTO login(String email, String password) {
         Person person = personRepository.findByEmail(email, Person.class);
 
         if (null != person && passwordEncoder.matches(password, person.getPasswordHash())) {
-            return updatePersonDTOFromPerson(new PersonEditRequest(), person);
+            return updatePersonDTOFromPerson(new PersonEditDTO(), person);
         }
 
         return null;
     }
 
     @Transactional
-    public PersonEditRequest update(PersonEditRequest personDTO) throws DuplicatePersonException {
+    public PersonEditDTO update(PersonEditDTO personDTO) throws DuplicatePersonException {
         Person person = assemblePersonFromDTO(personDTO);
 
         PersonIdOnly existingPersonId = personRepository.findByEmail(person.getEmail(), PersonIdOnly.class);
@@ -47,7 +47,7 @@ public class PersonService {
         return updatePersonDTOFromPerson(personDTO, person);
     }
 
-    private static PersonEditRequest updatePersonDTOFromPerson(PersonEditRequest personDTO, Person person) {
+    private static PersonEditDTO updatePersonDTOFromPerson(PersonEditDTO personDTO, Person person) {
         personDTO.setId(person.getId());
         personDTO.setBirthday(person.getBirthday());
         personDTO.setEmail(person.getEmail());
@@ -58,7 +58,7 @@ public class PersonService {
         return personDTO;
     }
 
-    private Person assemblePersonFromDTO(PersonEditRequest personDTO)  {
+    private Person assemblePersonFromDTO(PersonEditDTO personDTO)  {
         Person person = new Person();
 
         person.setId(personDTO.getId());

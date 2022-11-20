@@ -1,7 +1,7 @@
 package com.finnplay.user.manager.app.controller;
 
-import com.finnplay.user.manager.app.dto.PersonEditRequest;
-import com.finnplay.user.manager.app.dto.PersonLoginRequest;
+import com.finnplay.user.manager.app.dto.PersonEditDTO;
+import com.finnplay.user.manager.app.dto.PersonLoginDTO;
 import com.finnplay.user.manager.app.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Lookup;
@@ -17,9 +17,11 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.validation.Valid;
 
 @Controller
-@SessionAttributes({PersonEditRequest.PERSON_EDIT_BEAN_NAME, PersonLoginRequest.PERSON_LOGIN_BEAN_NAME})
+@SessionAttributes({PersonController.PERSON_EDIT_BEAN_NAME, PersonController.PERSON_LOGIN_BEAN_NAME})
 @Slf4j
 public abstract class PersonController {
+    public static final String PERSON_EDIT_BEAN_NAME = "personEdit";
+    public static final String PERSON_LOGIN_BEAN_NAME = "personLogin";
     private static final String LOGIN_PAGE_TEMPLATE = "login/LoginPage";
     private static final String EDIT_PAGE_TEMPLATE = "login/EditPersonPage";
     private static final String LOGIN_PAGE_URL = "/login";
@@ -39,13 +41,13 @@ public abstract class PersonController {
         return new RedirectView(LOGIN_PAGE_URL);
     }
 
-    @ModelAttribute(PersonLoginRequest.PERSON_LOGIN_BEAN_NAME)
+    @ModelAttribute(PERSON_LOGIN_BEAN_NAME)
     @Lookup
-    public abstract PersonLoginRequest personLogin();
+    public abstract PersonLoginDTO personLogin();
 
-    @ModelAttribute(PersonEditRequest.PERSON_EDIT_BEAN_NAME)
+    @ModelAttribute(PERSON_EDIT_BEAN_NAME)
     @Lookup
-    public abstract PersonEditRequest personEdit();
+    public abstract PersonEditDTO personEdit();
 
     @GetMapping(LOGIN_PAGE_URL)
     public String doLogin() {
@@ -53,13 +55,13 @@ public abstract class PersonController {
     }
 
     @PostMapping(LOGIN_PAGE_URL)
-    public String doLogin(@ModelAttribute(PersonLoginRequest.PERSON_LOGIN_BEAN_NAME) @Valid PersonLoginRequest personLoginRequest, BindingResult result, Model model) {
+    public String doLogin(@ModelAttribute(PERSON_LOGIN_BEAN_NAME) @Valid PersonLoginDTO personLoginDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return LOGIN_PAGE_TEMPLATE;
         }
 
         try {
-            PersonEditRequest loggedPerson = personService.login(personLoginRequest.getEmail(), personLoginRequest.getPassword());
+            PersonEditDTO loggedPerson = personService.login(personLoginDTO.getEmail(), personLoginDTO.getPassword());
             if (null != loggedPerson) {
                 updatePersonBean(model, loggedPerson);
 
@@ -83,13 +85,13 @@ public abstract class PersonController {
     }
 
     @PostMapping(EDIT_PAGE_URL)
-    public String doEdit(@ModelAttribute(PersonEditRequest.PERSON_EDIT_BEAN_NAME) @Valid PersonEditRequest personDTO, BindingResult result, Model model) {
+    public String doEdit(@ModelAttribute(PERSON_EDIT_BEAN_NAME) @Valid PersonEditDTO personEditDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return EDIT_PAGE_TEMPLATE;
         }
 
         try {
-            updatePersonBean(model, personService.update(personDTO));
+            updatePersonBean(model, personService.update(personEditDTO));
         } catch (Exception e) {
             log.error("Failed to edit user", e);
             addError(result, e.getMessage());
@@ -115,8 +117,8 @@ public abstract class PersonController {
         result.addError(new ObjectError("globalError", errorMessage));
     }
 
-    private static void updatePersonBean(Model model, PersonEditRequest loggedPerson) {
-        model.addAttribute(PersonEditRequest.PERSON_EDIT_BEAN_NAME, loggedPerson);
+    private static void updatePersonBean(Model model, PersonEditDTO personEditDTO) {
+        model.addAttribute(PERSON_EDIT_BEAN_NAME, personEditDTO);
     }
 
 }

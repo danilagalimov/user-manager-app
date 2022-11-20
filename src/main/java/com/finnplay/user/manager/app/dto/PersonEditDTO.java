@@ -12,9 +12,7 @@ import java.time.LocalDate;
 @Data
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PersonEditRequest {
-    public static final String PERSON_EDIT_BEAN_NAME = "personEdit";
-
+public class PersonEditDTO {
     Integer id;
 
     @NotEmpty
