@@ -10,7 +10,7 @@ Tecnhologies used:
 - MySQL
 - Docker
 
-To build it, checkout the project then execute `build-docker-images.cmd` then `run-docker-compose.cmd` (on Windows).
+To build it, checkout the project then execute [build-docker-images.cmd] then [run-docker-compose.cmd] (on Windows).
 On Linux, execute these commands instead (in the root project directory):
 ```
 mvn clean install
